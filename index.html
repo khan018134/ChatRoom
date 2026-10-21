@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stratosphere | Professional Anonymous Network</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background-color: #0b0f19;
+        color: #94a3b8;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+      }
+      aside {
+        width: 300px;
+        border-right: 1px solid #1e293b;
+        background-color: #0f172a;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        user-select: none;
+      }
+      .sidebar-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+      }
+      .sidebar-section {
+        margin-bottom: 24px;
+      }
+      main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: #0b0f19;
+        position: relative;
+      }
+      header {
+        height: 64px;
+        border-bottom: 1px solid #1e293b;
+        background-color: #0f172a;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        user-select: none;
+      }
+      .brand-title {
+        font-weight: 700;
+        color: #f8fafc;
+        font-size: 16px;
+        margin-left: 8px;
+      }
+      .section-heading {
+        font-size: 11px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        letter-spacing: 0.05em;
+      }
+      .status-card {
+        background-color: rgba(30, 41, 59, 0.4);
+        padding: 16px;
+        border-radius: 12px;
+        border: 1px solid #1e293b;
+      }
+      .status-text {
+        font-size: 12px;
+        font-weight: 500;
+        color: #10b981;
+      }
+      .queue-text {
+        font-size: 12px;
+        color: #94a3b8;
+        line-height: 1.6;
+        margin: 8px 0;
+      }
+      .btn-blue {
+        width: 100%;
+        padding: 8px 16px;
+        background-color: #2563eb;
+        color: white;
+        font-weight: 600;
+        font-size: 12px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .btn-blue:hover {
+        background-color: #1d4ed8;
+      }
+      .btn-blue:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      .btn-red {
+        width: 100%;
+        padding: 8px 16px;
+        background-color: rgba(127, 29, 29, 0.4);
+        border: 1px solid rgba(185, 28, 28, 0.6);
+        color: #f87171;
+        font-weight: 600;
+        font-size: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .btn-red:hover {
+        background-color: rgba(127, 29, 29, 0.7);
+      }
+      .tag-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .interest-tag {
+        font-size: 11px;
+        background-color: #1e293b;
+        color: #cbd5e1;
+        padding: 4px 10px;
+        border-radius: 6px;
+        border: 1px solid rgba(148, 163, 184, 0.1);
+      }
+      .rule-item {
+        font-size: 12px;
+        color: #94a3b8;
+        margin-bottom: 8px;
+        line-height: 1.5;
+      }
+      .rule-title {
+        font-weight: 600;
+        color: #e2e8f0;
+      }
+      .rule-sub {
+        font-size: 11px;
+        color: #64748b;
+      }
+      .sidebar-footer {
+        padding: 16px;
+        border-top: 1px solid #1e293b;
+        background-color: rgba(11, 15, 25, 0.4);
+      }
+      .user-profile-badge {
+        display: flex;
+        align-items: center;
+        background-color: rgba(30, 41, 59, 0.3);
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(30, 41, 59, 0.6);
+        width: 100%;
+      }
+      .avatar-circle {
+        height: 32px;
+        width: 32px;
+        border-radius: 50%;
+        background-color: #334155;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 12px;
+        color: #f8fafc;
+        margin-right: 12px;
+        flex-shrink: 0;
+      }
+      .user-meta-name {
+        font-size: 12px;
+        font-weight: 600;
+        color: #f8fafc;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .user-meta-hash {
+        font-size: 10px;
+        color: #64748b;
+        font-family: monospace;
+      }
+      .header-meta-box {
+        display: flex;
+        align-items: center;
+      }
+      .header-badge {
+        font-size: 11px;
+        font-weight: 500;
+        color: #64748b;
+        background-color: rgba(30, 41, 59, 0.4);
+        border: 1px solid #1e293b;
+        padding: 4px 10px;
+        border-radius: 6px;
+      }
+      #chat-feed {
+        flex: 1;
+        padding: 24px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .blank-slate {
+        margin: auto;
+        text-align: center;
+        max-width: 320px;
+      }
+      .blank-icon {
+        height: 44px;
+        width: 44px;
+        border-radius: 12px;
+        background-color: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(51, 65, 85, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #94a3b8;
+        font-size: 16px;
+        margin: 0 auto 12px;
+      }
+      .blank-title {
+        color: #f8fafc;
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      .blank-desc {
+        font-size: 12px;
+        color: #64748b;
+        line-height: 1.6;
+      }
+      .message-row {
+        display: flex;
+        flex-direction: column;
+        max-width: 80%;
+      }
+      .message-row.you {
+        align-self: flex-end;
+        align-items: flex-end;
+      }
+      .message-row.stranger {
+        align-self: flex-start;
+        align-items: flex-start;
+      }
+      .msg-meta-label {
+        font-size: 10px;
+        font-weight: 600;
+        color: #64748b;
+        margin-bottom: 4px;
+        margin-right: 4px;
+      }
+      .msg-bubble {
+        padding: 10px 16px;
+        border-radius: 16px;
+        font-size: 14px;
+        line-height: 1.6;
+        word-break: break-word;
+      }
+      .message-row.you .msg-bubble {
+        background-color: #2563eb;
+        color: white;
+        border-top-right-radius: 2px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .message-row.stranger .msg-bubble {
+        background-color: #1e293b;
+        color: #e2e8f0;
+        border-top-left-radius: 2px;
+        border: 1px solid #334155;
+      }
+      .sys-badge-container {
+        display: flex;
+        justify-content: center;
+        margin: 12px 0;
+      }
+      .sys-badge {
+        font-size: 11px;
+        font-weight: 500;
+        color: #64748b;
+        background-color: rgba(30, 41, 59, 0.2);
+        padding: 6px 14px;
+        border-radius: 6px;
+        border: 1px solid #1e293b;
+      }
+      #typing-indicator-box {
+        padding: 8px 24px;
+        font-size: 12px;
+        color: #64748b;
+        background-color: #0b0f19;
+        display: none;
+        align-items: center;
+      }
+      .dot-blink {
+        height: 4px;
+        width: 4px;
+        background-color: #64748b;
+        border-radius: 50%;
+        display: inline-block;
+        margin-left: 2px;
+        animation: blink 1.4s infinite both;
+      }
+      .dot-blink:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .dot-blink:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 0.2;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+      .input-tray {
+        padding: 16px;
+        border-top: 1px solid #1e293b;
+        background-color: #0f172a;
+      }
+      .form-container {
+        display: flex;
+        gap: 12px;
+        max-width: 1024px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      #message-input {
+        flex: 1;
+        background-color: #0b0f19;
+        border: 1px solid #1e293b;
+        color: #e2e8f0;
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-size: 14px;
+        outline: none;
+        transition: border 0.2s;
+      }
+      #message-input:focus {
+        border-color: #2563eb;
+      }
+      #message-input:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      .btn-send {
+        background-color: #2563eb;
+        color: white;
+        padding: 0 16px;
+        border: none;
+        font-weight: 600;
+        font-size: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.2s;
+        white-space: nowrap;
+      }
+      .btn-send:hover {
+        background-color: #1d4ed8;
+      }
+      .btn-send:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+</html>
+  <body>
+    <!-- LEFT SIDEBAR PANELS -->
+    <aside>
+      <div class="sidebar-content">
+        <div class="sidebar-section" style="display: flex; align-items: center; padding-bottom: 8px;">
+          <div style="height: 28px; width: 28px; background-color: #2563eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 14px;">S</div>
+          <span class="brand-title">stratosphere</span>
+        </div>
+
+        <div class="sidebar-section">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h3 class="section-heading" style="margin: 0;">Match queue</h3>
+            <span style="height: 8px; width: 8px; background-color: #10b981; border-radius: 50%;"></span>
+          </div>
+          <div class="status-card">
+            <p id="system-status-indicator" class="status-text" style="color: #10b981;">● Ready to connect</p>
+            <p id="queue-desc" class="queue-text">Your queue is paused. Click the trigger below to link up with professional peers online.</p>
+            <button id="action-trigger-btn" class="btn-blue" type="button">Connect to Peer</button>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <h3 class="section-heading">Your Interests</h3>
+          <div class="tag-container">
+            <span class="interest-tag">Product Strategy</span>
+            <span class="interest-tag">Design Leadership</span>
+            <span class="interest-tag">Startups</span>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <h3 class="section-heading">Shared Etiquette</h3>
+          <div class="rule-item">
+            <p class="rule-title">Lead with respect</p>
+            <p class="rule-sub">Be curious. Make room for others.</p>
+          </div>
+          <div class="rule-item">
+            <p class="rule-title">Keep it confidential</p>
+            <p class="rule-sub">What's shared here stays here.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div id="danger-bracket" class="hidden" style="margin-bottom: 12px;">
+          <button id="kill-session-btn" class="btn-red" type="button">Report / End Chat</button>
+        </div>
+        <div class="user-profile-badge">
+          <div class="avatar-circle" id="client-avatar">U</div>
+          <div style="flex: 1; min-width: 0;">
+            <p class="user-meta-name" id="client-user">Syncing...</p>
+            <p class="user-meta-hash" id="client-tag">#0000</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT MAIN CONVERSATION FRAMEWORK -->
+    <main>
+      <header>
+        <div class="header-meta-box">
+          <div class="avatar-circle" id="peer-avatar" style="background-color: #1e293b; color: #94a3b8; font-size: 14px; margin-right: 12px; height: 36px; width: 36px; border-radius: 4px;">?</div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span id="peer-header-title" style="font-weight: 600; font-size: 14px; color: #f8fafc;">No Active Session</span>
+              <span id="peer-status-dot" style="height: 6px; width: 6px; border-radius: 50%; background-color: #475569;"></span>
+            </div>
+            <p id="peer-sub-header" style="font-size: 11px; color: #64748b;">Waiting to establish handshake link...</p>
+          </div>
+        </div>
+        <div class="header-badge">🔒 Private, one-to-one</div>
+      </header>
+
+      <div id="chat-feed">
+        <div id="blank-slate-screen" class="blank-slate">
+          <div class="blank-icon">⚡</div>
+          <h2 class="blank-title">Terminal Active</h2>
+          <p class="blank-desc">Press "Connect to Peer" in the left configuration module to line up into chat pipelines.</p>
+        </div>
+      </div>
+
+      <div id="typing-indicator-box">
+        <span id="typing-text-element">Peer is drafting text</span>
+        <span class="dot-blink"></span>
+        <span class="dot-blink"></span>
+        <span class="dot-blink"></span>
+      </div>
+
+      <div class="input-tray">
+        <form id="chat-form" class="form-container">
+          <input type="text" id="message-input" placeholder="Communication terminal locked..." autocomplete="off" disabled />
+          <button type="submit" id="send-btn" class="btn-send" disabled>Send message ↑</button>
+        </form>
+      </div>
+    </main>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      let activePeerName = "Stranger";
+
+      const clientUser = document.getElementById("client-user");
+      const clientTag = document.getElementById("client-tag");
+      const clientAvatar = document.getElementById("client-avatar");
+      const actionTriggerBtn = document.getElementById("action-trigger-btn");
+      const killSessionBtn = document.getElementById("kill-session-btn");
+      const dangerBracket = document.getElementById("danger-bracket");
+      const systemStatusIndicator = document.getElementById("system-status-indicator");
+      const messageInput = document.getElementById("message-input");
+      const sendBtn = document.getElementById("send-btn");
+      const chatFeed = document.getElementById("chat-feed");
+      const chatForm = document.getElementById("chat-form");
+      const blankSlateScreen = document.getElementById("blank-slate-screen");
+      const queueDesc = document.getElementById("queue-desc");
+      const peerAvatar = document.getElementById("peer-avatar");
+      const peerHeaderTitle = document.getElementById("peer-header-title");
+      const peerStatusDot = document.getElementById("peer-status-dot");
+      const peerSubHeader = document.getElementById("peer-sub-header");
+      const typingIndicatorBox = document.getElementById("typing-indicator-box");
+      const typingTextElement = document.getElementById("typing-text-element");
+
+      // Safely pulls text data profiles without hitting array reference crashes
+      function getInitials(name) {
+        if (!name) return "U";
+        const strings = name.trim().split(' ');
+        if (strings.length >= 2 && strings[0] && strings[1]) {
+          return (strings[0].charAt(0) + strings[1].charAt(0)).toUpperCase();
+        }
+        return name.charAt(0).toUpperCase();
+      }
+
+      socket.on("session-created", (identity) => {
+        clientUser.innerText = identity.username;
+        clientTag.innerText = identity.tag;
+        clientAvatar.innerText = getInitials(identity.username);
+      });
+
+      actionTriggerBtn.addEventListener("click", () => { socket.emit("find-match"); });
+
+      socket.on("waiting", () => {
+        systemStatusIndicator.innerText = "● Matching in progress...";
+        systemStatusIndicator.style.color = "#f59e0b";
+        queueDesc.innerText = "Searching topology lines for a verified professional peer. Hang tight.";
+        actionTriggerBtn.disabled = true;
+        actionTriggerBtn.innerText = "Searching...";
+      });
+
+      socket.on("matched", (data) => {
+        activePeerName = data.peer.username;
+        
+        peerAvatar.innerText = getInitials(activePeerName);
+        peerAvatar.style.backgroundColor = "#2563eb";
+        peerAvatar.style.color = "white";
+        peerAvatar.style.borderRadius = "4px";
+        peerHeaderTitle.innerText = activePeerName;
+        peerStatusDot.style.backgroundColor = "#10b981";
+        peerSubHeader.innerText = "Connected & Active — Say hello!";
+
+        systemStatusIndicator.innerText = "● Linked Session Active";
+        systemStatusIndicator.style.color = "#3b82f6";
+        queueDesc.innerText = "Your queue is paused while you chat. Take your time — good conversations aren't a race.";
+        actionTriggerBtn.classList.add("hidden");
+        dangerBracket.classList.remove("hidden");
+        
+        messageInput.disabled = false;
+        sendBtn.disabled = false;
+        messageInput.placeholder = `Message ${activePeerName}...`;
+        
+        if (blankSlateScreen) blankSlateScreen.classList.add("hidden");
+        chatFeed.innerHTML = "";
+        
+        appendSystemMessage(`You and ${activePeerName} matched. A new perspective starts with hello.`);
+        messageInput.focus();
+      });
+
+      let typingTimer;
+      messageInput.addEventListener("input", () => {
+        socket.emit("typing-signal", true);
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => { socket.emit("typing-signal", false); }, 2000);
+      });
+
+      socket.on("peer-typing", (isTyping) => {
+        if (isTyping) {
+          typingTextElement.innerText = `${activePeerName} is typing`;
+          typingIndicatorBox.style.display = "flex";
+        } else {
+          typingIndicatorBox.style.display = "none";
+        }
+      });
+
+      chatForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const textContent = messageInput.value.trim();
+        if (!textContent) return;
+        
+        socket.emit("send-chat-message", textContent);
+        socket.emit("typing-signal", false);
+        
+        const now = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        appendMessage(textContent, "you", "You", now);
+        messageInput.value = "";
+        messageInput.focus();
+      });
+
+      socket.on("chat-message", (data) => {
+        typingIndicatorBox.style.display = "none";
+        const now = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        appendMessage(data.text, "stranger", activePeerName, now);
+      });
+
+      socket.on("peer-disconnected", () => {
+        appendSystemMessage(`❌ Connection lost: ${activePeerName} left the channel.`);
+        breakAppSessionState();
+      });
+
+      killSessionBtn.addEventListener("click", () => {
+        socket.emit("leave-chat");
+        appendSystemMessage("⚠️ Session terminated by user command.");
+        breakAppSessionState();
+      });
+
+      function breakAppSessionState() {
+        actionTriggerBtn.classList.remove("hidden");
+        actionTriggerBtn.disabled = false;
+        actionTriggerBtn.innerText = "Connect to Peer";
+        dangerBracket.classList.add("hidden");
+        
+        systemStatusIndicator.innerText = "● Ready to connect";
+        systemStatusIndicator.style.color = "#10b981";
+        queueDesc.innerText = "Your queue is paused. Click the trigger below to link up with professional peers online.";
+        
+        peerAvatar.innerText = "?";
+        peerAvatar.style.backgroundColor = "#1e293b";
+        peerAvatar.style.color = "#94a3b8";
+        peerAvatar.style.borderRadius = "4px";
+        peerHeaderTitle.innerText = "No Active Session";
+        peerStatusDot.style.backgroundColor = "#475569";
+        peerSubHeader.innerText = "Waiting to establish handshake link...";
+        
+        typingIndicatorBox.style.display = "none";
+        messageInput.disabled = true;
+        sendBtn.disabled = true;
+        messageInput.value = "";
+        messageInput.placeholder = "Communication terminal locked...";
+      }
+
+      function appendMessage(text, originCode, titleLabel, timeStamp) {
+        if (blankSlateScreen) blankSlateScreen.classList.add("hidden");
+        const msgNode = document.createElement("div");
+        
+        if (originCode === "you") {
+          msgNode.className = "message-row you";
+          msgNode.innerHTML = `
+            <div style="display: flex; align-items: center; margin-bottom: 4px;">
+              <span class="msg-meta-label">${titleLabel}</span>
+              <span class="msg-meta-label" style="font-size: 9px; font-weight: normal;">${timeStamp}</span>
+            </div>
+            <div class="msg-bubble">${escapeHTML(text)}</div>
+          `;
+        } else {
+          msgNode.className = "message-row stranger";
+          msgNode.innerHTML = `
+            <div style="display: flex; align-items: center; margin-bottom: 4px;">
+              <span class="msg-meta-label" style="color: #94a3b8;">${titleLabel}</span>
+              <span class="msg-meta-label" style="font-size: 9px; font-weight: normal;">${timeStamp}</span>
+            </div>
+            <div class="msg-bubble">${escapeHTML(text)}</div>
+          `;
+        }
+        chatFeed.appendChild(msgNode);
+        chatFeed.scrollTop = chatFeed.scrollHeight;
+      }
+
+      function appendSystemMessage(text) {
+        if (blankSlateScreen) blankSlateScreen.classList.add("hidden");
+        const sysNode = document.createElement("div");
+        sysNode.className = "sys-badge-container";
+        sysNode.innerHTML = `<span class="sys-badge">${text}</span>`;
+        chatFeed.appendChild(sysNode);
+        chatFeed.scrollTop = chatFeed.scrollHeight;
+      }
+
+      function escapeHTML(str) {
+        return str.replace(/[&<>'"]/g, (tag) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[tag] || tag));
+      }
+    </script>
+  </body>
+</html>
