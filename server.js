@@ -151,7 +151,10 @@ function createChatServer({ allowedOrigins = parseAllowedOrigins() } = {}) {
     if (recentEvents.length >= limit.max) {
       rateLimits.set(eventName, recentEvents);
       if (shouldNotify) {
-        notifyActionError(socket, "Too many requests. Please wait and try again.");
+        notifyActionError(
+          socket,
+          "Too many requests. Please wait and try again.",
+        );
       }
       return false;
     }
@@ -244,7 +247,9 @@ function createChatServer({ allowedOrigins = parseAllowedOrigins() } = {}) {
         return;
       }
       if (text.length > MAX_MESSAGE_LENGTH) {
-        rejectMessage(`Messages must be ${MAX_MESSAGE_LENGTH} characters or fewer.`);
+        rejectMessage(
+          `Messages must be ${MAX_MESSAGE_LENGTH} characters or fewer.`,
+        );
         return;
       }
 
@@ -301,7 +306,7 @@ function createChatServer({ allowedOrigins = parseAllowedOrigins() } = {}) {
 function startServer() {
   const { server, io } = createChatServer();
   const port = Number(process.env.PORT || 3000);
-  const host = process.env.HOST || "127.0.0.1";
+  const host = process.env.HOST || "0.0.0.0";
 
   if (!Number.isInteger(port) || port < 1 || port > 65535) {
     throw new Error("PORT must be an integer between 1 and 65535.");
