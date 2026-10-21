@@ -26,6 +26,7 @@ ChatRoom/
 ├── package-lock.json
 ├── package.json
 ├── server.js
+├── tailwind.html         # Saved Tailwind website snapshot; not app styling
 └── test/
     └── server.test.js
 ```
@@ -123,9 +124,9 @@ origin.
 
 ## Security and deployment notes
 
-The server only serves the chat page; project files such as `server.js` and
-`package.json` are not exposed as static assets. Socket.IO checks request
-origins, validates message payloads and lengths, rate-limits
+The server only serves the chat page; project files such as `server.js`,
+`package.json`, and the unrelated `tailwind.html` snapshot are not exposed as
+static assets. Socket.IO checks request origins, validates message payloads and lengths, rate-limits
 matchmaking/messages/typing events, and sends messages only to the server-owned
 pair room. The frontend renders chat content as text.
 
