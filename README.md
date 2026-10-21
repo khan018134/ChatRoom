@@ -1,4 +1,8 @@
-# ChatRoom
+# # ChatRoom 💬
+
+🚀 A real-time chat application built with Node.js and Socket.IO.
+
+🌐 **Live Demo:** [Open ChatRoom](https://status-mean-kangaroo.abasthan.app)
 
 ChatRoom is a small anonymous, one-to-one chat application. It uses an Express
 HTTP server and Socket.IO for ephemeral identities, random matchmaking, private
