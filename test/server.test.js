@@ -115,7 +115,13 @@ test("serves only the chat page and sets browser security headers", async () => 
   assert.equal(response.headers.get("x-content-type-options"), "nosniff");
   assert.equal(response.headers.get("x-frame-options"), "DENY");
 
-  for (const file of ["/server.js", "/package.json", "/package-lock.json", "/tailwind.js"]) {
+  for (const file of [
+    "/server.js",
+    "/package.json",
+    "/package-lock.json",
+    "/tailwind.js",
+    "/tailwind.html",
+  ]) {
     const hiddenFile = await fetch(`${baseUrl}${file}`);
     assert.equal(hiddenFile.status, 404, `${file} should not be served`);
   }
