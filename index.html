@@ -431,20 +431,64 @@
     <!-- LEFT SIDEBAR PANELS -->
     <aside>
       <div class="sidebar-content">
-        <div class="sidebar-section" style="display: flex; align-items: center; padding-bottom: 8px;">
-          <div style="height: 28px; width: 28px; background-color: #2563eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 14px;">S</div>
+        <div
+          class="sidebar-section"
+          style="display: flex; align-items: center; padding-bottom: 8px"
+        >
+          <div
+            style="
+              height: 28px;
+              width: 28px;
+              background-color: #2563eb;
+              border-radius: 4px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-weight: bold;
+              color: white;
+              font-size: 14px;
+            "
+          >
+            S
+          </div>
           <span class="brand-title">stratosphere</span>
         </div>
 
         <div class="sidebar-section">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <h3 class="section-heading" style="margin: 0;">Match queue</h3>
-            <span style="height: 8px; width: 8px; background-color: #10b981; border-radius: 50%;"></span>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 8px;
+            "
+          >
+            <h3 class="section-heading" style="margin: 0">Match queue</h3>
+            <span
+              style="
+                height: 8px;
+                width: 8px;
+                background-color: #10b981;
+                border-radius: 50%;
+              "
+            ></span>
           </div>
           <div class="status-card">
-            <p id="system-status-indicator" class="status-text" style="color: #10b981;" aria-live="polite">● Ready to connect</p>
-            <p id="queue-desc" class="queue-text">Your queue is paused. Click the trigger below to link up with professional peers online.</p>
-            <button id="action-trigger-btn" class="btn-blue" type="button">Connect to Peer</button>
+            <p
+              id="system-status-indicator"
+              class="status-text"
+              style="color: #10b981"
+              aria-live="polite"
+            >
+              ● Ready to connect
+            </p>
+            <p id="queue-desc" class="queue-text">
+              Your queue is paused. Click the trigger below to link up with
+              professional peers online.
+            </p>
+            <button id="action-trigger-btn" class="btn-blue" type="button">
+              Connect to Peer
+            </button>
           </div>
         </div>
 
@@ -471,12 +515,14 @@
       </div>
 
       <div class="sidebar-footer">
-        <div id="danger-bracket" class="hidden" style="margin-bottom: 12px;">
-          <button id="kill-session-btn" class="btn-red" type="button">End Chat</button>
+        <div id="danger-bracket" class="hidden" style="margin-bottom: 12px">
+          <button id="kill-session-btn" class="btn-red" type="button">
+            End Chat
+          </button>
         </div>
         <div class="user-profile-badge">
           <div class="avatar-circle" id="client-avatar">U</div>
-          <div style="flex: 1; min-width: 0;">
+          <div style="flex: 1; min-width: 0">
             <p class="user-meta-name" id="client-user">Syncing...</p>
             <p class="user-meta-hash" id="client-tag">#0000</p>
           </div>
@@ -488,13 +534,41 @@
     <main>
       <header>
         <div class="header-meta-box">
-          <div class="avatar-circle" id="peer-avatar" style="background-color: #1e293b; color: #94a3b8; font-size: 14px; margin-right: 12px; height: 36px; width: 36px; border-radius: 4px;">?</div>
+          <div
+            class="avatar-circle"
+            id="peer-avatar"
+            style="
+              background-color: #1e293b;
+              color: #94a3b8;
+              font-size: 14px;
+              margin-right: 12px;
+              height: 36px;
+              width: 36px;
+              border-radius: 4px;
+            "
+          >
+            ?
+          </div>
           <div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span id="peer-header-title" style="font-weight: 600; font-size: 14px; color: #f8fafc;">No Active Session</span>
-              <span id="peer-status-dot" style="height: 6px; width: 6px; border-radius: 50%; background-color: #475569;"></span>
+            <div style="display: flex; align-items: center; gap: 8px">
+              <span
+                id="peer-header-title"
+                style="font-weight: 600; font-size: 14px; color: #f8fafc"
+                >No Active Session</span
+              >
+              <span
+                id="peer-status-dot"
+                style="
+                  height: 6px;
+                  width: 6px;
+                  border-radius: 50%;
+                  background-color: #475569;
+                "
+              ></span>
             </div>
-            <p id="peer-sub-header" style="font-size: 11px; color: #64748b;">Waiting to establish handshake link...</p>
+            <p id="peer-sub-header" style="font-size: 11px; color: #64748b">
+              Waiting to establish handshake link...
+            </p>
           </div>
         </div>
         <div class="header-badge">🔒 Private, one-to-one</div>
@@ -504,7 +578,10 @@
         <div id="blank-slate-screen" class="blank-slate">
           <div class="blank-icon">⚡</div>
           <h2 class="blank-title">Terminal Active</h2>
-          <p class="blank-desc">Press "Connect to Peer" in the left configuration module to line up into chat pipelines.</p>
+          <p class="blank-desc">
+            Press "Connect to Peer" in the left configuration module to line up
+            into chat pipelines.
+          </p>
         </div>
       </div>
 
@@ -517,8 +594,18 @@
 
       <div class="input-tray">
         <form id="chat-form" class="form-container" aria-label="Chat message">
-          <input type="text" id="message-input" placeholder="Communication terminal locked..." autocomplete="off" maxlength="2000" aria-label="Message" disabled />
-          <button type="submit" id="send-btn" class="btn-send" disabled>Send message ↑</button>
+          <input
+            type="text"
+            id="message-input"
+            placeholder="Communication terminal locked..."
+            autocomplete="off"
+            maxlength="2000"
+            aria-label="Message"
+            disabled
+          />
+          <button type="submit" id="send-btn" class="btn-send" disabled>
+            Send message ↑
+          </button>
         </form>
       </div>
     </main>
@@ -536,7 +623,9 @@
       const actionTriggerBtn = document.getElementById("action-trigger-btn");
       const killSessionBtn = document.getElementById("kill-session-btn");
       const dangerBracket = document.getElementById("danger-bracket");
-      const systemStatusIndicator = document.getElementById("system-status-indicator");
+      const systemStatusIndicator = document.getElementById(
+        "system-status-indicator",
+      );
       const messageInput = document.getElementById("message-input");
       const sendBtn = document.getElementById("send-btn");
       const chatFeed = document.getElementById("chat-feed");
@@ -547,7 +636,9 @@
       const peerHeaderTitle = document.getElementById("peer-header-title");
       const peerStatusDot = document.getElementById("peer-status-dot");
       const peerSubHeader = document.getElementById("peer-sub-header");
-      const typingIndicatorBox = document.getElementById("typing-indicator-box");
+      const typingIndicatorBox = document.getElementById(
+        "typing-indicator-box",
+      );
       const typingTextElement = document.getElementById("typing-text-element");
 
       function getInitials(name) {
@@ -559,7 +650,12 @@
       }
 
       socket.on("session-created", (identity) => {
-        if (!identity || typeof identity.username !== "string" || typeof identity.tag !== "string") return;
+        if (
+          !identity ||
+          typeof identity.username !== "string" ||
+          typeof identity.tag !== "string"
+        )
+          return;
         clientUser.textContent = identity.username;
         clientTag.textContent = identity.tag;
         clientAvatar.textContent = getInitials(identity.username);
@@ -575,7 +671,8 @@
         breakAppSessionState();
         systemStatusIndicator.textContent = "● Reconnecting...";
         systemStatusIndicator.style.color = "#f59e0b";
-        queueDesc.textContent = "Connection lost. Reconnecting to the chat server...";
+        queueDesc.textContent =
+          "Connection lost. Reconnecting to the chat server...";
         actionTriggerBtn.disabled = true;
       });
 
@@ -597,7 +694,7 @@
             ? data.peer.username
             : "Stranger";
         isChatActive = true;
-        
+
         peerAvatar.textContent = getInitials(activePeerName);
         peerAvatar.style.backgroundColor = "#2563eb";
         peerAvatar.style.color = "white";
@@ -608,17 +705,20 @@
 
         systemStatusIndicator.textContent = "● Linked Session Active";
         systemStatusIndicator.style.color = "#3b82f6";
-        queueDesc.textContent = "Your queue is paused while you chat. Take your time — good conversations aren't a race.";
+        queueDesc.textContent =
+          "Your queue is paused while you chat. Take your time — good conversations aren't a race.";
         actionTriggerBtn.classList.add("hidden");
         dangerBracket.classList.remove("hidden");
-        
+
         messageInput.disabled = false;
         sendBtn.disabled = false;
         messageInput.placeholder = `Message ${activePeerName}...`;
-        
+
         chatFeed.replaceChildren();
-        
-        appendSystemMessage(`You and ${activePeerName} matched. A new perspective starts with hello.`);
+
+        appendSystemMessage(
+          `You and ${activePeerName} matched. A new perspective starts with hello.`,
+        );
         messageInput.focus();
       });
 
@@ -663,7 +763,10 @@
             return;
           }
 
-          const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+          const now = new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
           appendMessage(textContent, "you", "You", now);
         });
 
@@ -674,20 +777,27 @@
       socket.on("chat-message", (data) => {
         if (!data || typeof data.text !== "string" || !isChatActive) return;
         typingIndicatorBox.style.display = "none";
-        const now = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        const now = new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
         appendMessage(data.text, "stranger", activePeerName, now);
       });
 
       socket.on("chat-error", (data) => {
-        if (data && typeof data.message === "string") appendSystemMessage(data.message);
+        if (data && typeof data.message === "string")
+          appendSystemMessage(data.message);
       });
 
       socket.on("action-error", (data) => {
-        if (data && typeof data.message === "string") appendSystemMessage(data.message);
+        if (data && typeof data.message === "string")
+          appendSystemMessage(data.message);
       });
 
       socket.on("peer-disconnected", () => {
-        appendSystemMessage(`❌ Connection lost: ${activePeerName} left the channel.`);
+        appendSystemMessage(
+          `❌ Connection lost: ${activePeerName} left the channel.`,
+        );
         breakAppSessionState();
       });
 
@@ -699,7 +809,8 @@
 
       function stopTypingSignal() {
         clearTimeout(typingTimer);
-        if (typingActive && socket.connected) socket.emit("typing-signal", false);
+        if (typingActive && socket.connected)
+          socket.emit("typing-signal", false);
         typingActive = false;
       }
 
@@ -709,11 +820,12 @@
         actionTriggerBtn.disabled = false;
         actionTriggerBtn.textContent = "Connect to Peer";
         dangerBracket.classList.add("hidden");
-        
+
         systemStatusIndicator.textContent = "● Ready to connect";
         systemStatusIndicator.style.color = "#10b981";
-        queueDesc.textContent = "Your queue is paused. Click the button below to find an online peer.";
-        
+        queueDesc.textContent =
+          "Your queue is paused. Click the button below to find an online peer.";
+
         peerAvatar.textContent = "?";
         peerAvatar.style.backgroundColor = "#1e293b";
         peerAvatar.style.color = "#94a3b8";
@@ -721,7 +833,7 @@
         peerHeaderTitle.textContent = "No Active Session";
         peerStatusDot.style.backgroundColor = "#475569";
         peerSubHeader.textContent = "Waiting to establish a connection...";
-        
+
         typingIndicatorBox.style.display = "none";
         messageInput.disabled = true;
         sendBtn.disabled = true;
@@ -735,7 +847,8 @@
         const msgNode = document.createElement("div");
         msgNode.className = `message-row ${originCode === "you" ? "you" : "stranger"}`;
         const metadata = document.createElement("div");
-        metadata.style.cssText = "display: flex; align-items: center; margin-bottom: 4px;";
+        metadata.style.cssText =
+          "display: flex; align-items: center; margin-bottom: 4px;";
         const name = document.createElement("span");
         name.className = "msg-meta-label";
         name.textContent = titleLabel;
