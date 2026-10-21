@@ -372,6 +372,59 @@
       .hidden {
         display: none !important;
       }
+      @media (max-width: 640px) {
+        body {
+          height: 100dvh;
+          flex-direction: column;
+        }
+        aside {
+          flex: 0 0 auto;
+          width: 100%;
+          max-height: 40dvh;
+          border-right: 0;
+          border-bottom: 1px solid #1e293b;
+        }
+        .sidebar-content {
+          padding: 12px 16px;
+        }
+        .sidebar-section {
+          margin-bottom: 14px;
+        }
+        .sidebar-footer {
+          padding: 8px 12px;
+        }
+        main {
+          min-height: 0;
+        }
+        header {
+          min-height: 64px;
+          padding: 0 12px;
+        }
+        #chat-feed {
+          padding: 16px;
+        }
+        .message-row {
+          max-width: 95%;
+        }
+        .input-tray {
+          padding: 12px;
+        }
+        .form-container {
+          gap: 8px;
+        }
+        #message-input {
+          min-width: 0;
+          padding: 10px 12px;
+        }
+        .btn-send {
+          padding: 0 12px;
+        }
+      }
+      @media (max-width: 420px) {
+        .header-badge {
+          display: none;
+        }
+      }
     </style>
   </head>
   <body>
@@ -389,7 +442,7 @@
             <span style="height: 8px; width: 8px; background-color: #10b981; border-radius: 50%;"></span>
           </div>
           <div class="status-card">
-            <p id="system-status-indicator" class="status-text" style="color: #10b981;">● Ready to connect</p>
+            <p id="system-status-indicator" class="status-text" style="color: #10b981;" aria-live="polite">● Ready to connect</p>
             <p id="queue-desc" class="queue-text">Your queue is paused. Click the trigger below to link up with professional peers online.</p>
             <button id="action-trigger-btn" class="btn-blue" type="button">Connect to Peer</button>
           </div>
@@ -419,7 +472,7 @@
 
       <div class="sidebar-footer">
         <div id="danger-bracket" class="hidden" style="margin-bottom: 12px;">
-          <button id="kill-session-btn" class="btn-red" type="button">Report / End Chat</button>
+          <button id="kill-session-btn" class="btn-red" type="button">End Chat</button>
         </div>
         <div class="user-profile-badge">
           <div class="avatar-circle" id="client-avatar">U</div>
@@ -455,7 +508,7 @@
         </div>
       </div>
 
-      <div id="typing-indicator-box">
+      <div id="typing-indicator-box" aria-live="polite">
         <span id="typing-text-element">Peer is drafting text</span>
         <span class="dot-blink"></span>
         <span class="dot-blink"></span>
@@ -463,8 +516,8 @@
       </div>
 
       <div class="input-tray">
-        <form id="chat-form" class="form-container">
-          <input type="text" id="message-input" placeholder="Communication terminal locked..." autocomplete="off" disabled />
+        <form id="chat-form" class="form-container" aria-label="Chat message">
+          <input type="text" id="message-input" placeholder="Communication terminal locked..." autocomplete="off" maxlength="2000" aria-label="Message" disabled />
           <button type="submit" id="send-btn" class="btn-send" disabled>Send message ↑</button>
         </form>
       </div>
@@ -473,6 +526,9 @@
     <script>
       const socket = io();
       let activePeerName = "Stranger";
+      let isChatActive = false;
+      let typingActive = false;
+      let typingTimer;
 
       const clientUser = document.getElementById("client-user");
       const clientTag = document.getElementById("client-tag");
@@ -494,46 +550,65 @@
       const typingIndicatorBox = document.getElementById("typing-indicator-box");
       const typingTextElement = document.getElementById("typing-text-element");
 
-      // Safely pulls text data profiles without hitting array reference crashes
       function getInitials(name) {
-        if (!name) return "U";
-        const strings = name.trim().split(' ');
-        if (strings.length >= 2 && strings[0] && strings[1]) {
-          return (strings[0].charAt(0) + strings[1].charAt(0)).toUpperCase();
+        const parts = typeof name === "string" ? name.trim().split(/\s+/) : [];
+        if (parts.length >= 2 && parts[0] && parts[1]) {
+          return (parts[0][0] + parts[1][0]).toUpperCase();
         }
-        return name.charAt(0).toUpperCase();
+        return parts[0] ? parts[0][0].toUpperCase() : "U";
       }
 
       socket.on("session-created", (identity) => {
-        clientUser.innerText = identity.username;
-        clientTag.innerText = identity.tag;
-        clientAvatar.innerText = getInitials(identity.username);
+        if (!identity || typeof identity.username !== "string" || typeof identity.tag !== "string") return;
+        clientUser.textContent = identity.username;
+        clientTag.textContent = identity.tag;
+        clientAvatar.textContent = getInitials(identity.username);
       });
 
-      actionTriggerBtn.addEventListener("click", () => { socket.emit("find-match"); });
+      socket.on("connect", () => {
+        breakAppSessionState();
+        actionTriggerBtn.disabled = false;
+      });
+
+      socket.on("disconnect", () => {
+        stopTypingSignal();
+        breakAppSessionState();
+        systemStatusIndicator.textContent = "● Reconnecting...";
+        systemStatusIndicator.style.color = "#f59e0b";
+        queueDesc.textContent = "Connection lost. Reconnecting to the chat server...";
+        actionTriggerBtn.disabled = true;
+      });
+
+      actionTriggerBtn.addEventListener("click", () => {
+        if (socket.connected) socket.emit("find-match");
+      });
 
       socket.on("waiting", () => {
-        systemStatusIndicator.innerText = "● Matching in progress...";
+        systemStatusIndicator.textContent = "● Matching in progress...";
         systemStatusIndicator.style.color = "#f59e0b";
-        queueDesc.innerText = "Searching topology lines for a verified professional peer. Hang tight.";
+        queueDesc.textContent = "Searching for a peer. Hang tight.";
         actionTriggerBtn.disabled = true;
-        actionTriggerBtn.innerText = "Searching...";
+        actionTriggerBtn.textContent = "Searching...";
       });
 
       socket.on("matched", (data) => {
-        activePeerName = data.peer.username;
+        activePeerName =
+          data && data.peer && typeof data.peer.username === "string"
+            ? data.peer.username
+            : "Stranger";
+        isChatActive = true;
         
-        peerAvatar.innerText = getInitials(activePeerName);
+        peerAvatar.textContent = getInitials(activePeerName);
         peerAvatar.style.backgroundColor = "#2563eb";
         peerAvatar.style.color = "white";
         peerAvatar.style.borderRadius = "4px";
-        peerHeaderTitle.innerText = activePeerName;
+        peerHeaderTitle.textContent = activePeerName;
         peerStatusDot.style.backgroundColor = "#10b981";
-        peerSubHeader.innerText = "Connected & Active — Say hello!";
+        peerSubHeader.textContent = "Connected & Active — Say hello!";
 
-        systemStatusIndicator.innerText = "● Linked Session Active";
+        systemStatusIndicator.textContent = "● Linked Session Active";
         systemStatusIndicator.style.color = "#3b82f6";
-        queueDesc.innerText = "Your queue is paused while you chat. Take your time — good conversations aren't a race.";
+        queueDesc.textContent = "Your queue is paused while you chat. Take your time — good conversations aren't a race.";
         actionTriggerBtn.classList.add("hidden");
         dangerBracket.classList.remove("hidden");
         
@@ -541,23 +616,25 @@
         sendBtn.disabled = false;
         messageInput.placeholder = `Message ${activePeerName}...`;
         
-        if (blankSlateScreen) blankSlateScreen.classList.add("hidden");
-        chatFeed.innerHTML = "";
+        chatFeed.replaceChildren();
         
         appendSystemMessage(`You and ${activePeerName} matched. A new perspective starts with hello.`);
         messageInput.focus();
       });
 
-      let typingTimer;
       messageInput.addEventListener("input", () => {
-        socket.emit("typing-signal", true);
+        if (!isChatActive || !socket.connected) return;
+        if (!typingActive) {
+          socket.emit("typing-signal", true);
+          typingActive = true;
+        }
         clearTimeout(typingTimer);
-        typingTimer = setTimeout(() => { socket.emit("typing-signal", false); }, 2000);
+        typingTimer = setTimeout(stopTypingSignal, 2000);
       });
 
       socket.on("peer-typing", (isTyping) => {
         if (isTyping) {
-          typingTextElement.innerText = `${activePeerName} is typing`;
+          typingTextElement.textContent = `${activePeerName} is typing`;
           typingIndicatorBox.style.display = "flex";
         } else {
           typingIndicatorBox.style.display = "none";
@@ -567,21 +644,46 @@
       chatForm.addEventListener("submit", (e) => {
         e.preventDefault();
         const textContent = messageInput.value.trim();
-        if (!textContent) return;
-        
-        socket.emit("send-chat-message", textContent);
-        socket.emit("typing-signal", false);
-        
-        const now = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        appendMessage(textContent, "you", "You", now);
+        if (!textContent || !isChatActive || !socket.connected) return;
+        if (textContent.length > 2000) {
+          appendSystemMessage("Messages must be 2000 characters or fewer.");
+          return;
+        }
+
+        stopTypingSignal();
+        sendBtn.disabled = true;
+        socket.emit("send-chat-message", textContent, (result) => {
+          sendBtn.disabled = !isChatActive || !socket.connected;
+          if (!result || !result.ok) {
+            appendSystemMessage(
+              result && typeof result.error === "string"
+                ? result.error
+                : "Message could not be sent.",
+            );
+            return;
+          }
+
+          const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+          appendMessage(textContent, "you", "You", now);
+        });
+
         messageInput.value = "";
         messageInput.focus();
       });
 
       socket.on("chat-message", (data) => {
+        if (!data || typeof data.text !== "string" || !isChatActive) return;
         typingIndicatorBox.style.display = "none";
         const now = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
         appendMessage(data.text, "stranger", activePeerName, now);
+      });
+
+      socket.on("chat-error", (data) => {
+        if (data && typeof data.message === "string") appendSystemMessage(data.message);
+      });
+
+      socket.on("action-error", (data) => {
+        if (data && typeof data.message === "string") appendSystemMessage(data.message);
       });
 
       socket.on("peer-disconnected", () => {
@@ -590,59 +692,63 @@
       });
 
       killSessionBtn.addEventListener("click", () => {
-        socket.emit("leave-chat");
+        if (socket.connected) socket.emit("leave-chat");
         appendSystemMessage("⚠️ Session terminated by user command.");
         breakAppSessionState();
       });
 
+      function stopTypingSignal() {
+        clearTimeout(typingTimer);
+        if (typingActive && socket.connected) socket.emit("typing-signal", false);
+        typingActive = false;
+      }
+
       function breakAppSessionState() {
+        isChatActive = false;
         actionTriggerBtn.classList.remove("hidden");
         actionTriggerBtn.disabled = false;
-        actionTriggerBtn.innerText = "Connect to Peer";
+        actionTriggerBtn.textContent = "Connect to Peer";
         dangerBracket.classList.add("hidden");
         
-        systemStatusIndicator.innerText = "● Ready to connect";
+        systemStatusIndicator.textContent = "● Ready to connect";
         systemStatusIndicator.style.color = "#10b981";
-        queueDesc.innerText = "Your queue is paused. Click the trigger below to link up with professional peers online.";
+        queueDesc.textContent = "Your queue is paused. Click the button below to find an online peer.";
         
-        peerAvatar.innerText = "?";
+        peerAvatar.textContent = "?";
         peerAvatar.style.backgroundColor = "#1e293b";
         peerAvatar.style.color = "#94a3b8";
         peerAvatar.style.borderRadius = "4px";
-        peerHeaderTitle.innerText = "No Active Session";
+        peerHeaderTitle.textContent = "No Active Session";
         peerStatusDot.style.backgroundColor = "#475569";
-        peerSubHeader.innerText = "Waiting to establish handshake link...";
+        peerSubHeader.textContent = "Waiting to establish a connection...";
         
         typingIndicatorBox.style.display = "none";
         messageInput.disabled = true;
         sendBtn.disabled = true;
         messageInput.value = "";
         messageInput.placeholder = "Communication terminal locked...";
+        stopTypingSignal();
       }
 
       function appendMessage(text, originCode, titleLabel, timeStamp) {
         if (blankSlateScreen) blankSlateScreen.classList.add("hidden");
         const msgNode = document.createElement("div");
-        
-        if (originCode === "you") {
-          msgNode.className = "message-row you";
-          msgNode.innerHTML = `
-            <div style="display: flex; align-items: center; margin-bottom: 4px;">
-              <span class="msg-meta-label">${titleLabel}</span>
-              <span class="msg-meta-label" style="font-size: 9px; font-weight: normal;">${timeStamp}</span>
-            </div>
-            <div class="msg-bubble">${escapeHTML(text)}</div>
-          `;
-        } else {
-          msgNode.className = "message-row stranger";
-          msgNode.innerHTML = `
-            <div style="display: flex; align-items: center; margin-bottom: 4px;">
-              <span class="msg-meta-label" style="color: #94a3b8;">${titleLabel}</span>
-              <span class="msg-meta-label" style="font-size: 9px; font-weight: normal;">${timeStamp}</span>
-            </div>
-            <div class="msg-bubble">${escapeHTML(text)}</div>
-          `;
-        }
+        msgNode.className = `message-row ${originCode === "you" ? "you" : "stranger"}`;
+        const metadata = document.createElement("div");
+        metadata.style.cssText = "display: flex; align-items: center; margin-bottom: 4px;";
+        const name = document.createElement("span");
+        name.className = "msg-meta-label";
+        name.textContent = titleLabel;
+        if (originCode !== "you") name.style.color = "#94a3b8";
+        const timestamp = document.createElement("span");
+        timestamp.className = "msg-meta-label";
+        timestamp.style.cssText = "font-size: 9px; font-weight: normal;";
+        timestamp.textContent = timeStamp;
+        const bubble = document.createElement("div");
+        bubble.className = "msg-bubble";
+        bubble.textContent = text;
+        metadata.append(name, timestamp);
+        msgNode.append(metadata, bubble);
         chatFeed.appendChild(msgNode);
         chatFeed.scrollTop = chatFeed.scrollHeight;
       }
@@ -651,13 +757,12 @@
         if (blankSlateScreen) blankSlateScreen.classList.add("hidden");
         const sysNode = document.createElement("div");
         sysNode.className = "sys-badge-container";
-        sysNode.innerHTML = `<span class="sys-badge">${text}</span>`;
+        const badge = document.createElement("span");
+        badge.className = "sys-badge";
+        badge.textContent = text;
+        sysNode.appendChild(badge);
         chatFeed.appendChild(sysNode);
         chatFeed.scrollTop = chatFeed.scrollHeight;
-      }
-
-      function escapeHTML(str) {
-        return str.replace(/[&<>'"]/g, (tag) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[tag] || tag));
       }
     </script>
   </body>
