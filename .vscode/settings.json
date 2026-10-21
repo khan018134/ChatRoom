@@ -1,5 +1,6 @@
 {
   "files.associations": {
-    "tailwind.html": "html"
+    "*.html": "html",
+    "*.htm": "html"
   }
 }

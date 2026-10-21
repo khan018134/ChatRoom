@@ -125,10 +125,10 @@ origin.
 ## Security and deployment notes
 
 The server only serves the chat page; project files such as `server.js`,
-`package.json`, and the unrelated `tailwind.html` snapshot are not exposed as
-static assets. Socket.IO checks request origins, validates message payloads and lengths, rate-limits
-matchmaking/messages/typing events, and sends messages only to the server-owned
-pair room. The frontend renders chat content as text.
+`package.json`, and the saved `tailwind.html` page are not exposed as static
+assets. Socket.IO checks request origins, validates message payloads and
+lengths, rate-limits matchmaking/messages/typing events, and sends messages
+only to the server-owned pair room. The frontend renders chat content as text.
 
 Socket state and matchmaking queues are held in memory in one server process.
 Restarting the process ends all active sessions. This is intended for local or
